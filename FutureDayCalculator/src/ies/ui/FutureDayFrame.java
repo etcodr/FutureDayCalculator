@@ -132,7 +132,6 @@ public class FutureDayFrame extends JFrame {
         add(panel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // setSize(new Dimension(300, 300));
         pack();
     }
 
