@@ -7,11 +7,21 @@ import java.time.temporal.ChronoUnit;
 public class CalendarCalculations {
     public static long calculateFutureDays(LocalDate startDate, LocalDate endDate) {
         long weekDays = 0;
-        while (startDate.isBefore(endDate)) {
-            startDate = startDate.plus(1, ChronoUnit.DAYS);
-            if (!(startDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
-                    startDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-                ++weekDays;
+        if (startDate.isBefore(endDate)) {
+            while (startDate.isBefore(endDate)) {
+                startDate = startDate.plus(1, ChronoUnit.DAYS);
+                if (!(startDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                        startDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+                    ++weekDays;
+                }
+            }
+        } else {
+            while (startDate.isAfter(endDate)) {
+                startDate = startDate.minus(1, ChronoUnit.DAYS);
+                if (!(startDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                        startDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+                    ++weekDays;
+                }
             }
         }
         return weekDays;
@@ -31,7 +41,7 @@ public class CalendarCalculations {
             }
         } else {
             while (counter > daysOut) {
-                startDate = startDate.plus(1, ChronoUnit.DAYS);
+                startDate = startDate.minus(1, ChronoUnit.DAYS);
                 if (!(startDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
                         startDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
                     ++weekDays;

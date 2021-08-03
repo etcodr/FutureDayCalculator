@@ -187,7 +187,7 @@ public class FutureDayFrame extends JFrame {
             endDateField.setText(endDate.format(DT));
         }
         
-        if (daysOut < 0) { totalDays = ChronoUnit.DAYS.between(endDate, startDate); }
+        if (startDate.isAfter(endDate)) { totalDays = ChronoUnit.DAYS.between(endDate, startDate); }
         else { totalDays = ChronoUnit.DAYS.between(startDate, endDate); }
 
         weekendDays = totalDays - weekDays;
