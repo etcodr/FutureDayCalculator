@@ -7,7 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.Box;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -60,7 +60,7 @@ public class FutureDayFrame extends JFrame {
         daysOutField = new JTextField();
         totalDaysField = new JTextField();
         weekendDaysField = new JTextField();
-        rdoButton1 = new JRadioButton("Weekdays");
+        rdoButton1 = new JRadioButton("Wkdays");
         rdoButton2 = new JRadioButton("Days");
 
         totalDaysField.setEditable(false);
@@ -92,9 +92,11 @@ public class FutureDayFrame extends JFrame {
         ButtonGroup radioPanel = new ButtonGroup();
         radioPanel.add(rdoButton1);
         radioPanel.add(rdoButton2);
-        Box rdoButtonBox = Box.createHorizontalBox();
-        rdoButtonBox.add(rdoButton1);
-        rdoButtonBox.add(rdoButton2);
+        
+        JPanel rdoPanel = new JPanel();
+        rdoPanel.setBorder(BorderFactory.createTitledBorder("Day Type"));
+        rdoPanel.add(rdoButton1);
+        rdoPanel.add(rdoButton2);
 
         // button panel
         JPanel buttonPanel = new JPanel();
@@ -102,6 +104,15 @@ public class FutureDayFrame extends JFrame {
         buttonPanel.add(calculateButton);
         buttonPanel.add(exitButton);
         buttonPanel.add(resetButton);
+
+        // constraints specifically for the toggle buttons
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(10, 10, 0, 10);
+        c.gridx = 0;
+        c.gridwidth = 4;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridy = 5;
 
         // main panel
         JPanel panel = new JPanel();
@@ -116,26 +127,20 @@ public class FutureDayFrame extends JFrame {
         panel.add(totalDaysField, getConstraints(1, 3));
         panel.add(new JLabel("Weekend days:"), getConstraints(0, 4));
         panel.add(weekendDaysField, getConstraints(1, 4));
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.EAST;
-        c.insets = new Insets(10, 5, 0, 5);
-        c.gridx = 1;
-        c.gridwidth = 2;
-        c.gridy = 5;
-        panel.add(rdoButtonBox, c);
+        panel.add(rdoPanel, c);
 
         add(panel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        setSize(new Dimension(300, 300));
+        // setSize(new Dimension(300, 300));
+        pack();
     }
 
     // helper method for getting a GridBagConstraints object
     private GridBagConstraints getConstraints(int x, int y) {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(10, 5, 0, 5);
+        c.insets = new Insets(10, 10, 0, 10);
         c.gridx = x;
         c.gridy = y;
         return c;
@@ -211,6 +216,7 @@ public class FutureDayFrame extends JFrame {
         java.awt.EventQueue.invokeLater(() -> {
             JFrame frame = new FutureDayFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setResizable(false);
             frame.setVisible(true);
         });
     }
