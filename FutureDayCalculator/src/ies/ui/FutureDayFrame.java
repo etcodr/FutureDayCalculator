@@ -7,14 +7,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -34,8 +31,7 @@ public class FutureDayFrame extends JFrame {
     private JTextField daysOutField;
     private JTextField totalDaysField;
     private JTextField weekendDaysField;
-    private JRadioButton rdoButton1;
-    private JRadioButton rdoButton2;
+    private JTextField weekdaysField;
 
     public FutureDayFrame() {
         initComponents();
@@ -60,13 +56,11 @@ public class FutureDayFrame extends JFrame {
         daysOutField = new JTextField();
         totalDaysField = new JTextField();
         weekendDaysField = new JTextField();
-        rdoButton1 = new JRadioButton("Wkdays");
-        rdoButton2 = new JRadioButton("Days");
+        weekdaysField = new JTextField();
 
         totalDaysField.setEditable(false);
         weekendDaysField.setEditable(false);
-
-        rdoButton1.setSelected(true);
+        weekdaysField.setEditable(false);
 
         Dimension dim = new Dimension(150, 20);
         startDateField.setPreferredSize(dim);
@@ -74,11 +68,13 @@ public class FutureDayFrame extends JFrame {
         daysOutField.setPreferredSize(dim);
         totalDaysField.setPreferredSize(dim);
         weekendDaysField.setPreferredSize(dim);
+        weekdaysField.setPreferredSize(dim);
         startDateField.setMinimumSize(dim);
         endDateField.setMinimumSize(dim);
         daysOutField.setMinimumSize(dim);
         totalDaysField.setMinimumSize(dim);
         weekendDaysField.setMinimumSize(dim);
+        weekdaysField.setMinimumSize(dim);
 
         JButton calculateButton = new JButton("Calculate");
         JButton exitButton = new JButton("Exit");
@@ -88,31 +84,12 @@ public class FutureDayFrame extends JFrame {
         exitButton.addActionListener(e -> exitButtonClicked());
         resetButton.addActionListener(e -> resetButtonClicked(currentDate));
 
-        // toggle group
-        ButtonGroup radioPanel = new ButtonGroup();
-        radioPanel.add(rdoButton1);
-        radioPanel.add(rdoButton2);
-        
-        JPanel rdoPanel = new JPanel();
-        rdoPanel.setBorder(BorderFactory.createTitledBorder("Day Type"));
-        rdoPanel.add(rdoButton1);
-        rdoPanel.add(rdoButton2);
-
         // button panel
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(calculateButton);
         buttonPanel.add(exitButton);
         buttonPanel.add(resetButton);
-
-        // constraints specifically for the toggle buttons
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.CENTER;
-        c.insets = new Insets(10, 10, 0, 10);
-        c.gridx = 0;
-        c.gridwidth = 4;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridy = 5;
 
         // main panel
         JPanel panel = new JPanel();
@@ -123,11 +100,13 @@ public class FutureDayFrame extends JFrame {
         panel.add(endDateField, getConstraints(1, 1));
         panel.add(new JLabel("Days out:"), getConstraints(0, 2));
         panel.add(daysOutField, getConstraints(1, 2));
-        panel.add(new JLabel("Total days:"), getConstraints(0, 3));
-        panel.add(totalDaysField, getConstraints(1, 3));
+        panel.add(new JLabel("Weekdays:"), getConstraints(0, 3));
+        panel.add(weekdaysField, getConstraints(1, 3));
         panel.add(new JLabel("Weekend days:"), getConstraints(0, 4));
         panel.add(weekendDaysField, getConstraints(1, 4));
-        panel.add(rdoPanel, c);
+        panel.add(new JLabel("Total days:"), getConstraints(0, 5));
+        panel.add(totalDaysField, getConstraints(1, 5));
+        
 
         add(panel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -153,8 +132,10 @@ public class FutureDayFrame extends JFrame {
         // error messages
         String dateErrorMessage = "Date must be in the MM/dd/yyyy format.\n"
                                 + "Please re-enter.";
+
         String intErrorMessage = "Days out must be an integer.\n"
                                + "Please re-enter.";
+
         String errorTitle = "Invalid Entry";
 
         if (daysOutField.getText().isEmpty()) {
@@ -192,11 +173,9 @@ public class FutureDayFrame extends JFrame {
 
         weekendDays = totalDays - weekDays;
 
-        if (rdoButton1.isSelected()) { totalDaysField.setText(Long.toString(weekDays)); }
-        else if (rdoButton2.isSelected()) { totalDaysField.setText(Long.toString(totalDays)); }
-
+        weekdaysField.setText(Long.toString(weekDays));
         weekendDaysField.setText(Long.toString(weekendDays));
-        daysOutField.setText("");
+        totalDaysField.setText(Long.toString(totalDays));
     }
 
     private void exitButtonClicked() { System.exit(0); }
@@ -208,7 +187,7 @@ public class FutureDayFrame extends JFrame {
         totalDaysField.setText("");
         weekendDaysField.setText("");
         startDateField.requestFocus();
-        rdoButton1.setSelected(true);
+        weekdaysField.setText("");
     }
 
     public static void main(String[] args) {
