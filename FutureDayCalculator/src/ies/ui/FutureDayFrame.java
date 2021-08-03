@@ -12,6 +12,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -20,6 +21,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+
+import ies.business.CalendarCalculations;
 
 public class FutureDayFrame extends JFrame {
 
@@ -46,7 +51,6 @@ public class FutureDayFrame extends JFrame {
         }
 
         setTitle("Future Day Calculator");
-        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
 
         LocalDate currentDate = LocalDate.now();
@@ -78,9 +82,11 @@ public class FutureDayFrame extends JFrame {
 
         JButton calculateButton = new JButton("Calculate");
         JButton exitButton = new JButton("Exit");
+        JButton resetButton = new JButton("Reset");
 
         calculateButton.addActionListener(e -> calculateButtonClicked());
         exitButton.addActionListener(e -> exitButtonClicked());
+        resetButton.addActionListener(e -> resetButtonClicked(currentDate));
 
         // toggle group
         ButtonGroup radioPanel = new ButtonGroup();
@@ -95,6 +101,7 @@ public class FutureDayFrame extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(calculateButton);
         buttonPanel.add(exitButton);
+        buttonPanel.add(resetButton);
 
         // main panel
         JPanel panel = new JPanel();
@@ -122,7 +129,6 @@ public class FutureDayFrame extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
 
         setSize(new Dimension(300, 300));
-        // setVisible(true);
     }
 
     // helper method for getting a GridBagConstraints object
@@ -136,11 +142,66 @@ public class FutureDayFrame extends JFrame {
     }
 
     private void calculateButtonClicked() {
-        // TODO add validation for user input
-        // TODO invoke the calculateFutureDay method depending on the toggle button selection
+        LocalDate startDate, endDate;
+        long totalDays, weekDays, weekendDays;
+
+        // error messages
+        String dateErrorMessage = "Date must be in the MM/dd/yyyy format.\n"
+                                + "Please re-enter.";
+        String intErrorMessage = "Days out must be an integer.\n"
+                               + "Please re-enter.";
+        String errorTitle = "Invalid Entry";
+
+        if (daysOutField.getText().isEmpty()) {
+            try {
+                startDate = LocalDate.parse(startDateField.getText(), DT);
+                endDate = LocalDate.parse(endDateField.getText(), DT);
+            } catch (DateTimeParseException e) {
+                JOptionPane.showMessageDialog(this, dateErrorMessage, errorTitle, JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            weekDays = CalendarCalculations.calculateFutureDays(startDate, endDate);
+        } else {
+            try {
+                startDate = LocalDate.parse(startDateField.getText(), DT);
+            } catch (DateTimeParseException e) {
+                JOptionPane.showMessageDialog(this, dateErrorMessage, errorTitle, JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            endDate = startDate;
+
+            int daysOut;
+            try {
+                daysOut = Integer.parseInt(daysOutField.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, intErrorMessage, errorTitle, JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            weekDays = CalendarCalculations.calculateFutureDays(startDate, daysOut);
+            endDate = endDate.plus(daysOut, ChronoUnit.DAYS);
+            endDateField.setText(endDate.format(DT));
+        }
+        totalDays = ChronoUnit.DAYS.between(startDate, endDate);
+        weekendDays = totalDays - weekDays;
+
+        if (rdoButton1.isSelected()) { totalDaysField.setText(Long.toString(weekDays)); }
+        else if (rdoButton2.isSelected()) { totalDaysField.setText(Long.toString(totalDays)); }
+
+        weekendDaysField.setText(Long.toString(weekendDays));
+        daysOutField.setText("");
     }
 
     private void exitButtonClicked() { System.exit(0); }
+
+    private void resetButtonClicked(LocalDate currentDate) {
+        startDateField.setText(currentDate.format(DT));
+        endDateField.setText("");
+        daysOutField.setText("");
+        totalDaysField.setText("");
+        weekendDaysField.setText("");
+        startDateField.requestFocus();
+    }
 
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(() -> {
