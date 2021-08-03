@@ -143,7 +143,8 @@ public class FutureDayFrame extends JFrame {
 
     private void calculateButtonClicked() {
         LocalDate startDate, endDate;
-        long totalDays, weekDays, weekendDays;
+        long totalDays = 0, weekDays, weekendDays;
+        int daysOut = 0;
 
         // error messages
         String dateErrorMessage = "Date must be in the MM/dd/yyyy format.\n"
@@ -170,7 +171,6 @@ public class FutureDayFrame extends JFrame {
             }
             endDate = startDate;
 
-            int daysOut;
             try {
                 daysOut = Integer.parseInt(daysOutField.getText());
             } catch (NumberFormatException e) {
@@ -182,7 +182,10 @@ public class FutureDayFrame extends JFrame {
             endDate = endDate.plus(daysOut, ChronoUnit.DAYS);
             endDateField.setText(endDate.format(DT));
         }
-        totalDays = ChronoUnit.DAYS.between(startDate, endDate);
+        
+        if (daysOut < 0) { totalDays = ChronoUnit.DAYS.between(endDate, startDate); }
+        else { totalDays = ChronoUnit.DAYS.between(startDate, endDate); }
+
         weekendDays = totalDays - weekDays;
 
         if (rdoButton1.isSelected()) { totalDaysField.setText(Long.toString(weekDays)); }

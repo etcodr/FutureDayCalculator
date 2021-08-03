@@ -20,13 +20,24 @@ public class CalendarCalculations {
     public static long calculateFutureDays(LocalDate startDate, int daysOut) {
         long weekDays = 0;
         int counter = 0;
-        while (counter < daysOut) {
-            startDate = startDate.plus(1, ChronoUnit.DAYS);
-            if (!(startDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
-                    startDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-                ++weekDays;
+        if (daysOut > counter) {
+            while (counter < daysOut) {
+                startDate = startDate.plus(1, ChronoUnit.DAYS);
+                if (!(startDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                        startDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+                    ++weekDays;
+                }
+                ++counter;
             }
-            ++counter;
+        } else {
+            while (counter > daysOut) {
+                startDate = startDate.plus(1, ChronoUnit.DAYS);
+                if (!(startDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                        startDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+                    ++weekDays;
+                }
+                --counter;
+            }
         }
         return weekDays;
     }
