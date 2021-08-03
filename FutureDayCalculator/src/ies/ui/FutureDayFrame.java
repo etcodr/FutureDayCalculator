@@ -201,6 +201,7 @@ public class FutureDayFrame extends JFrame {
         totalDaysField.setText("");
         weekendDaysField.setText("");
         startDateField.requestFocus();
+        rdoButton1.setSelected(true);
     }
 
     public static void main(String[] args) {
